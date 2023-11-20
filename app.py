@@ -1,10 +1,11 @@
 import os
 import pygal
 import csv
-from flask import Flask, render_template, request
+import base64
+from flask import Flask, render_template, request, Markup
 import requests
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 app.config["DEBUG"] = True
 app.config['SECRET_KEY'] = 'your secret key'
 
@@ -23,8 +24,8 @@ def index():
             stock_data = get_stock_data(ticker_symbol, chart_time_series)
 
             if stock_data:
-                make_graph(stock_data, chart_type, chart_time_series, start_date, end_date)
-                return render_template('index.html', chart_generated=True)
+                chart_svg = make_graph(stock_data, chart_type, chart_time_series, start_date, end_date)
+                return render_template('index.html', chart_generated=True, chart_svg=Markup(chart_svg))
             else:
                 return render_template('index.html', error_message="Error fetching stock data.")
         except Exception as e:
@@ -96,12 +97,11 @@ def make_graph(stock_data, chart_type, chart_time_series, start_date, end_date):
         chart.add('Low', lows)
         chart.add('Closing', closing)
 
-        static_dir = os.path.join(os.path.dirname(__file__), 'static')
-        chart_filename = f"{ticker}_stock_chart.svg"
-        chart.render_to_file(os.path.join(static_dir, chart_filename))
-        print(f"Chart generated successfully. You can view it at: {chart_filename}")
+        chart_svg = chart.render(is_unicode=True)
 
+        return chart_svg
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5001)
+
 
