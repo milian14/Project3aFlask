@@ -85,7 +85,10 @@
     
 
     {% if chart_generated %}
-        <p>Chart generated successfully. You can view it <a href="{{ url_for('static', filename='your_chart_file.svg') }}">here</a>.</p>
+        <p>Chart generated successfully. You can view it below:</p>
+        <div>
+            {{ chart_svg|safe }}
+        </div>
     {% endif %}
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
