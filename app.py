@@ -102,6 +102,6 @@ def make_graph(stock_data, chart_type, chart_time_series, start_date, end_date):
         return chart_svg
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5001)
+    app.run(host="0.0.0.0")
 
 
